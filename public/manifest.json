@@ -1,0 +1,17 @@
+{
+    "name": "Running Tracker",
+    "short_name": "RunApp",
+    "theme_color": "#3646BA",
+    "background_color": "#eef3ff",
+    "display": "standalone",
+    "scope": "/",
+    "start_url": "/",
+    "icons": [
+      {
+        "src": "/next.svg",
+        "sizes": "512x512",
+        "type": "/next.svg"
+      }
+    ]
+  }
+  

@@ -1,95 +1,101 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+// src/app/page.tsx
+"use client";
+
+import Link from "next/link";
+import styled from "styled-components";
+
+const Container = styled.div`
+  background-color: #eef3ff;
+  min-height: 100vh;
+  padding-bottom: 80px;
+`;
+
+const Header = styled.div`
+  padding: 20px;
+  text-align: center;
+  background-color: white;
+  font-weight: bold;
+  font-size: 20px;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+`;
+
+const Content = styled.div`
+  padding: 20px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const BottomNav = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 20px 20px 0 0;
+  z-index: 1000;
+`;
+
+const NavItem = styled(Link)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #3646BA;
+  font-size: 14px;
+`;
+
+const PlaceholderCard = styled.div`
+  background-color: white;
+  border-radius: 15px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+`;
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <Container>
+      <Header>Hey, Léa ! Commence à courir !</Header>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <Content>
+        <PlaceholderCard>
+          <strong>Objectif :</strong> Ne laisse pas tes baskets prendre la poussière !
+        </PlaceholderCard>
+
+        <PlaceholderCard>
+          <strong>Challenges :</strong> Rejoins des courses amusantes et solidaires !
+        </PlaceholderCard>
+
+        <PlaceholderCard>
+          <strong>Mon Feed :</strong> Découvre les courses récentes de tes amis !
+        </PlaceholderCard>
+      </Content>
+
+      <BottomNav>
+        <NavItem href="/">
+          🏠
+          <span>Accueil</span>
+        </NavItem>
+        <NavItem href="/map">
+          🗺️
+          <span>Cartes</span>
+        </NavItem>
+        <NavItem href="/groups">
+          👥
+          <span>Groupes</span>
+        </NavItem>
+        <NavItem href="/profile">
+          👤
+          <span>Profile</span>
+        </NavItem>
+      </BottomNav>
+    </Container>
   );
 }

@@ -87,7 +87,7 @@ export default function Home() {
           🗺️
           <span>Cartes</span>
         </NavItem>
-        <NavItem href="/groups">
+        <NavItem href="/groupes">
           👥
           <span>Groupes</span>
         </NavItem>

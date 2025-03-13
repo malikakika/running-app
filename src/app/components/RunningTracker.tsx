@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styled from "styled-components";
+import { useRouter } from "next/navigation";
 
 // 📌 Styles
 const Container = styled.div`
@@ -79,6 +80,8 @@ function ChangeView({ coords }: { coords: [number, number] }) {
 
 // 📌 Composant principal
 export default function RunningTracker() {
+    const router = useRouter();
+
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [route, setRoute] = useState<L.LatLngTuple[]>([]);
   const [steps, setSteps] = useState(0);
@@ -189,7 +192,7 @@ export default function RunningTracker() {
         </div>
         <div style={{ display: "flex", width: "100%", padding: "10px" }}>
         <ActionButton>Pause</ActionButton>
-        <ActionButton>Terminer</ActionButton>
+        <ActionButton onClick={() => router.push("/")}>Terminer</ActionButton>
       </div>
       </InfoBar>      
     </Container>

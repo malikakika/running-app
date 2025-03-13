@@ -3,8 +3,6 @@
 import styled from "styled-components";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
-// 📌 Styles globaux
 const Container = styled.div`
   background-color: #f5f7ff;
   min-height: 100vh;
@@ -103,7 +101,6 @@ export default function GroupsPage() {
       goal: "chaussures de foot",
       progress: 56,
       remainingSteps: "75 000 pas restants",
-      logo: "/club-esspo-logo.png",
     },
     {
       name: "Les Volants Badminton",
@@ -111,7 +108,6 @@ export default function GroupsPage() {
       goal: "nouveaux volants",
       progress: 42,
       remainingSteps: "81 500 pas restants",
-      logo: "/badminton-logo.png",
     },
   ];
 
@@ -122,7 +118,6 @@ export default function GroupsPage() {
       goal: "actions de sensibilisation",
       progress: 70,
       remainingSteps: "50 000 pas restants",
-      logo: "/octobre-rose-logo.png",
     },
     {
       name: "Sports pour Tous",
@@ -130,7 +125,6 @@ export default function GroupsPage() {
       goal: "équipements sportifs",
       progress: 35,
       remainingSteps: "100 000 pas restants",
-      logo: "/sports-pour-tous-logo.png",
     },
   ];
 
@@ -147,7 +141,6 @@ export default function GroupsPage() {
       <AssociationsList>
         {associationsNearby.map((asso, index) => (
           <Card key={index}>
-            <AssociationLogo src={asso.logo} alt={asso.name} width={70} height={70} />
             <h3>{asso.name}</h3>
             <p>{asso.description}</p>
             <p>
@@ -168,7 +161,6 @@ export default function GroupsPage() {
       <AssociationsList>
         {associationsFrance.map((asso, index) => (
           <Card key={index}>
-            <AssociationLogo src={asso.logo} alt={asso.name} width={70} height={70} />
             <h3>{asso.name}</h3>
             <p>{asso.description}</p>
             <p>

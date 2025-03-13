@@ -3,7 +3,7 @@
 import styled from "styled-components";
 import Image from "next/image";
 import Link from "next/link";
-
+import logo from "../../public/logo.svg"
 const Container = styled.div`
   background-color: #eef3ff;
   min-height: 100vh;
@@ -12,23 +12,36 @@ const Container = styled.div`
 `;
 
 const Header = styled.div`
-  padding: 20px;
-  text-align: center;
+  width: 100%;
   background-color: white;
-  font-weight: bold;
-  font-size: 20px;
-  border-radius: 0 0 20px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 0 0 20px 20px;
   position: relative;
-  font-family: 'Roboto', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  flex-direction: column; 
 `;
-
 const Logo = styled(Image)`
   position: absolute;
-  top: 10px;
-  left: 10px;
-  width: 50px;
+  left: 15px;
+  width: 100px;
   height: auto;
+`;
+const HeaderText = styled.div`
+  font-size: 18px;
+  text-align: center;
+  color: black;
+  line-height: 1.4;
+  strong {
+    font-size: 22px;
+    font-weight: bold;
+    display: block; 
+  }
 `;
 
 const Section = styled.div`
@@ -128,9 +141,12 @@ export default function Home() {
   return (
     <Container>
       <Header>
-        <Logo src="/logo.png" alt="Hop Hop" width={50} height={50} />
-        Hey, Léa ! Commence à courir !
-      </Header>
+  <Logo src={logo} alt="Hop Hop" width={50} height={50} />
+  <HeaderText>
+    <strong>Hey, Léa !</strong> 
+    Commence à courir !
+  </HeaderText>
+</Header>
 
       <Section>
         <ObjectiveBox>

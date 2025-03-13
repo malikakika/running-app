@@ -8,9 +8,9 @@
     "start_url": "/",
     "icons": [
       {
-        "src": "/next.svg",
+        "src": "/logo.svg",
         "sizes": "512x512",
-        "type": "/next.svg"
+        "type": "/logo.svg"
       }
     ]
   }

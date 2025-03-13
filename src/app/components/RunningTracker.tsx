@@ -1,240 +1,338 @@
-// "use client";
-
-// import { useEffect, useState, useRef, useMemo } from "react";
-// import { MapContainer, TileLayer, Marker, Polyline, useMap } from "react-leaflet";
-// import L from "leaflet";
-// import "leaflet/dist/leaflet.css";
-// import styled from "styled-components";
-// import { useRouter } from "next/navigation";
-
-// // 📌 Styles
-// const Container = styled.div`
-//   min-height: 100vh;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: space-between;
-//   background-color: #f8f9fa;
-//   padding: 10px;
-//   font-family: 'Roboto', sans-serif;
-// `;
-
-// const MapWrapper = styled.div`
-//   width: 100%;
-//   height: 65vh;
-//   border-radius: 15px;
-//   overflow: hidden;
-//   position: relative;
-// `;
-
-// const InfoBar = styled.div`
-//   width: 100%;
-//   background: white;
-//   padding: 15px;
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   border-radius: 15px 15px 0 0;
-//   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-// `;
-
-// const ActionButton = styled.button`
-//   flex: 1;
-//   padding: 15px;
-//   margin: 0 5px;
-//   font-size: 16px;
-//   font-weight: bold;
-//   color: white;
-//   background-color: #007bff;
-//   border: none;
-//   border-radius: 10px;
-//   cursor: pointer;
-// `;
-
-// const StepCounterBox = styled.div`
-//   margin: 20px 0;
-//   padding: 15px;
-//   background: #007bff;
-//   color: white;
-//   font-size: 1.4rem;
-//   font-weight: bold;
-//   border-radius: 10px;
-//   text-align: center;
-//   width: 200px;
-// `;
-
-// // 📌 Icône personnalisée pour les marqueurs
-// const customIcon = new L.Icon({
-//   iconUrl: "https://leafletjs.com/examples/custom-icons/leaf-green.png",
-//   iconSize: [38, 38],
-// });
-
-// // 📌 Composant pour recentrer la carte
-// function ChangeView({ coords }: { coords: [number, number] }) {
-//   const map = useMap();
-//   useEffect(() => {
-//     map.setView(coords, 14);
-//   }, [coords, map]);
-//   return null;
-// }
-
-// // 📌 Composant principal
-// export default function RunningTracker() {
-//   const router = useRouter();
-//   const [position, setPosition] = useState<[number, number] | null>(null);
-//   const [route, setRoute] = useState<L.LatLngTuple[]>([]);
-//   const [steps, setSteps] = useState(0);
-//   const stepsRef = useRef(0);
-//   const lastTimestamp = useRef(0);
-
-//   const startPoint = useMemo(() => [48.8588443, 2.2943506] as [number, number], []);
-//   const endPoint = useMemo(() => [48.8606, 2.3376] as [number, number], []);
-
-//   // 📌 Récupération de l'itinéraire
-//   useEffect(() => {
-//     const fetchRoute = async () => {
-//       try {
-//         const url = `https://router.project-osrm.org/route/v1/foot/${startPoint[1]},${startPoint[0]};${endPoint[1]},${endPoint[0]}?overview=simplified&geometries=geojson`;
-//         const response = await fetch(url);
-//         const data = await response.json();
-
-//         if (data.routes.length > 0) {
-//           const coordinates = data.routes[0].geometry.coordinates.map(([lon, lat]: [number, number]) => [lat, lon]);
-//           setRoute(coordinates);
-//         }
-//       } catch (error) {
-//         console.error("Erreur lors de la récupération du trajet :", error);
-//       }
-//     };
-//     fetchRoute();
-//   }, [startPoint, endPoint]);
-
-//   // 📌 Géolocalisation + Compteur de pas
-//   useEffect(() => {
-//     if ("geolocation" in navigator) {
-//       navigator.geolocation.watchPosition(
-//         (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
-//         (error) => console.error("Erreur de géolocalisation :", error.message),
-//         { enableHighAccuracy: true }
-//       );
-//     }
-
-//     if ("DeviceMotionEvent" in window) {
-//       let threshold = 1.5; // ✅ Ajusté pour éviter les faux positifs
-
-//       const handleMotion = (event: DeviceMotionEvent) => {
-//         const acc = event.accelerationIncludingGravity;
-//         const now = Date.now();
-
-//         if (acc && now - lastTimestamp.current > 300) { // ✅ Ajout d'un délai entre les pas
-//           const totalAcceleration = Math.sqrt(
-//             (acc.x || 0) ** 2 + (acc.y || 0) ** 2 + (acc.z || 0) ** 2
-//           );
-
-//           if (totalAcceleration > threshold) {
-//             stepsRef.current += 1;
-//             setSteps(stepsRef.current);
-//             lastTimestamp.current = now; 
-            
-//             console.log(`📱 Accéléromètre actif ! Pas détectés : ${stepsRef.current}`);
-//           }
-//         }
-//       };
-
-//       window.addEventListener("devicemotion", handleMotion);
-//       return () => window.removeEventListener("devicemotion", handleMotion);
-//     }
-//   }, []);
-
-//   return (
-//     <Container>
-//       <StepCounterBox>👣 {steps} pas</StepCounterBox>
-//       <MapWrapper>
-//         <MapContainer center={startPoint} zoom={14} style={{ width: "100%", height: "100%" }}>
-//           <TileLayer url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png" />
-//           {route.length > 0 && <Polyline positions={route} color="#007bff" weight={5} />} 
-//           <Marker position={startPoint} icon={customIcon} />
-//           <Marker position={endPoint} icon={customIcon} />
-//           {position && <ChangeView coords={position} />}
-//         </MapContainer>
-//       </MapWrapper>
-//       <InfoBar>
-//         <strong style={{ color: "#007bff", fontSize: "20px" }}>Tour Eiffel → Louvre</strong>
-//         <ActionButton onClick={() => router.push("/")}>Terminer</ActionButton>
-//       </InfoBar>
-//     </Container>
-//   );
-// }
 "use client";
 
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
+import { useRouter } from "next/navigation";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import L from "leaflet";
+import { Polyline } from "react-leaflet"; 
 
-// 📌 Styles
+import "leaflet/dist/leaflet.css";
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+
+const userIcon = new L.Icon({
+  iconUrl: "https://leafletjs.com/examples/custom-icons/leaf-green.png",
+  iconSize: [38, 38],
+});
+
+const startIcon = new L.Icon({
+  iconUrl: "https://leafletjs.com/examples/custom-icons/marker-icon.png",
+  iconSize: [30, 40],
+});
+
+const endIcon = new L.Icon({
+  iconUrl: "https://leafletjs.com/examples/custom-icons/marker-icon-red.png",
+  iconSize: [30, 40],
+});
+
+const startPoint: [number, number] = [48.8588443, 2.2943506]; // Tour Eiffel
+const endPoint: [number, number] = [48.8606, 2.3376]; // Louvre
+
 const Container = styled.div`
-  min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  font-family: "Roboto", sans-serif;
+  overflow: hidden;
+`;
+
+const MapBackground = styled(MapContainer)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1; /* Met la carte en arrière-plan */
+`;
+
+const InfoBar = styled.div`
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  background-color: #f8f9fa;
-  padding: 10px;
-  font-family: 'Roboto', sans-serif;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
 `;
 
-const StepCounterBox = styled.div`
-  margin: 20px 0;
-  padding: 15px;
-  background: #007bff;
-  color: white;
-  font-size: 1.4rem;
+const MetricsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 10px 20px;
+`;
+
+const Metric = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const MetricValue = styled.div`
+  font-size: 18px;
   font-weight: bold;
-  border-radius: 10px;
-  text-align: center;
-  width: 200px;
+  color: #3643ba;
 `;
 
-// 📌 Composant principal
+const CircularContainer = styled.div`
+  width: 40px;
+  height: 40px;
+`;
+
+const ActionButtonsContainer = styled.div`
+  display: flex;
+  gap: 70px;
+  width: 100%;
+  padding-top: 15px;
+`;
+
+const ActionButton = styled.button<{ primary?: boolean }>`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 19px 2px;
+  width: 150.5px;
+  height: auto;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+
+  ${({ primary }) =>
+    primary
+      ? `
+    background: #3643BA;
+    color: white;
+  `
+      : `
+    background: white;
+    color: #3643BA;
+    border: 2px solid #3643BA;
+  `}
+`;
+const MetricLabel = styled.span`
+  font-size: 14px;
+  color: #666;
+`;
+
 export default function RunningTracker() {
   const [steps, setSteps] = useState(0);
+  const [route, setRoute] = useState<[number, number][]>([]);
+
+  const [position, setPosition] = useState<[number, number] | null>(null);
+  const [tracking, setTracking] = useState(false);
+  const [permissionGranted, setPermissionGranted] = useState(false);
   const stepsRef = useRef(0);
   const lastTimestamp = useRef(0);
+  const lastAcceleration = useRef({ x: 0, y: 0, z: 0 });
+  const stepGoal = 900;
+  const totalTime = 12 * 60; 
+  const [timeLeft, setTimeLeft] = useState(totalTime);
+  const router = useRouter();
 
-  // 📌 Compteur de pas avec accéléromètre
-  useEffect(() => {
-    if ("DeviceMotionEvent" in window) {
-      let threshold = 1.5; // ✅ Ajusté pour éviter les faux positifs
-
-      const handleMotion = (event: DeviceMotionEvent) => {
-        const acc = event.accelerationIncludingGravity;
-        const now = Date.now();
-
-        if (acc && now - lastTimestamp.current > 300) { // ✅ Ajout d'un délai entre les pas
-          const totalAcceleration = Math.sqrt(
-            (acc.x || 0) ** 2 + (acc.y || 0) ** 2 + (acc.z || 0) ** 2
-          );
-
-          if (totalAcceleration > threshold) {
-            stepsRef.current += 1;
-            setSteps(stepsRef.current);
-            lastTimestamp.current = now; // ✅ Mise à jour du dernier pas détecté
-
-            // 🚀 Console log les pas détectés
-            console.log(`📱 Accéléromètre actif ! Pas détectés : ${stepsRef.current}`);
+  const toggleTracking = async () => {
+    if (!permissionGranted) {
+      if (
+        typeof DeviceMotionEvent !== "undefined" &&
+        typeof (DeviceMotionEvent as any).requestPermission === "function"
+      ) {
+        try {
+          const permission = await (
+            DeviceMotionEvent as any
+          ).requestPermission();
+          if (permission !== "granted") {
+            console.error(" Permission refusée pour l'accéléromètre.");
+            return;
           }
+        } catch (error) {
+          console.error("Erreur lors de la demande de permission :", error);
+          return;
         }
-      };
-
-      window.addEventListener("devicemotion", handleMotion);
-      return () => window.removeEventListener("devicemotion", handleMotion);
-    } else {
-      console.error("❌ DeviceMotionEvent non supporté sur ce navigateur.");
+      }
+      setPermissionGranted(true);
     }
+
+    if (!tracking) {
+      startMotionTracking();
+      startTimer();
+    } else {
+      window.removeEventListener("devicemotion", handleMotion);
+    }
+    setTracking(!tracking);
+  };
+
+  const handleMotion = (event: DeviceMotionEvent) => {
+    const acc = event.accelerationIncludingGravity;
+    const now = Date.now();
+
+    if (acc) {
+      const diffX = Math.abs((acc.x ?? 0) - lastAcceleration.current.x);
+      const diffY = Math.abs((acc.y ?? 0) - lastAcceleration.current.y);
+      const diffZ = Math.abs((acc.z ?? 0) - lastAcceleration.current.z);
+
+      const totalAcceleration = Math.sqrt(
+        (acc.x ?? 0) ** 2 + (acc.y ?? 0) ** 2 + (acc.z ?? 0) ** 2
+      );
+
+      if (
+        now - lastTimestamp.current > 1000 &&
+        (diffX > 1.8 || diffY > 1.8 || diffZ > 1.8) &&
+        totalAcceleration > 4.0
+      ) {
+        stepsRef.current += 1;
+        setSteps(stepsRef.current);
+        lastTimestamp.current = now;
+      }
+
+      lastAcceleration.current = {
+        x: acc.x ?? 0,
+        y: acc.y ?? 0,
+        z: acc.z ?? 0,
+      };
+    }
+  };
+
+  const startMotionTracking = () => {
+    if ("DeviceMotionEvent" in window) {
+      window.addEventListener("devicemotion", handleMotion);
+    } else {
+      console.error(" DeviceMotionEvent non supporté sur ce navigateur.");
+    }
+  };
+
+  const startTimer = () => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const stopTracking = () => {
+    window.removeEventListener("devicemotion", handleMotion);
+    alert(`Session terminée ! Nombre total de pas : ${steps}`);
+    router.push("/");
+  };
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
+        (error) => console.error("Erreur de géolocalisation :", error.message),
+        { enableHighAccuracy: true }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        (pos) => setPosition([pos.coords.latitude, pos.coords.longitude]),
+        (error) => console.error("Erreur de géolocalisation :", error.message),
+        { enableHighAccuracy: true }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchRoute = async () => {
+      try {
+        const url = `https://router.project-osrm.org/route/v1/foot/${startPoint[1]},${startPoint[0]};${endPoint[1]},${endPoint[0]}?overview=simplified&geometries=geojson`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.routes.length > 0) {
+          const coordinates = data.routes[0].geometry.coordinates.map(
+            ([lon, lat]: [number, number]) => [lat, lon]
+          );
+          setRoute(coordinates);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération du trajet :", error);
+      }
+    };
+
+    fetchRoute();
   }, []);
 
   return (
     <Container>
-      <StepCounterBox>👣 {steps} pas</StepCounterBox>
+      <MapBackground center={startPoint} zoom={14}>
+        <TileLayer url="https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png" />
+
+        {/* Marqueur Point de Départ (Tour Eiffel) */}
+        <Marker position={startPoint} icon={startIcon} />
+
+        {/* Marqueur Point d’Arrivée (Louvre) */}
+        <Marker position={endPoint} icon={endIcon} />
+
+        {/* Affichage du trajet */}
+        {route.length > 0 && (
+          <Polyline
+            positions={route}
+            color="blue"
+            weight={5}
+            dashArray="5,10"
+          />
+        )}
+
+        {/*  Position actuelle de l'utilisateur */}
+        {position && <Marker position={position} icon={userIcon} />}
+      </MapBackground>
+
+      <InfoBar>
+        <MetricsContainer>
+          <Metric>
+            <MetricValue>{steps}/900M</MetricValue>
+            <CircularContainer>
+              <CircularProgressbar
+                value={(steps / stepGoal) * 100}
+                styles={buildStyles({
+                  pathColor: "#007bff",
+                  trailColor: "#ddd",
+                  textColor: "transparent",
+                })}
+              />
+            </CircularContainer>
+            <MetricLabel>Distance restante</MetricLabel>
+          </Metric>
+
+          <Metric>
+            <MetricValue>
+              {Math.floor(timeLeft / 60)}/{12} min
+            </MetricValue>
+            <CircularContainer>
+              <CircularProgressbar
+                value={(timeLeft / totalTime) * 100}
+                styles={buildStyles({
+                  pathColor: "#FFBF00",
+                  trailColor: "#ddd",
+                  textColor: "transparent",
+                })}
+              />
+            </CircularContainer>
+            <MetricLabel>Temps restant</MetricLabel>
+          </Metric>
+        </MetricsContainer>
+
+        <ActionButtonsContainer>
+          <ActionButton primary onClick={toggleTracking}>
+            {tracking ? "Pause" : "Démarrer"}
+          </ActionButton>
+          <ActionButton onClick={stopTracking}>Terminer</ActionButton>
+        </ActionButtonsContainer>
+      </InfoBar>
     </Container>
   );
 }

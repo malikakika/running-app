@@ -56,6 +56,8 @@ const Card = styled.div`
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   min-width: 350px;
   flex-shrink: 0;
+    font-family: 'Roboto', sans-serif;
+
 `;
 
 const AssociationLogo = styled(Image)`

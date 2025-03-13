@@ -17,6 +17,8 @@ const Container = styled.div`
   background-color: #eef3ff;
   padding: 10px;
   position: relative;
+    font-family: 'Roboto', sans-serif;
+
 `;
 
 const MapWrapper = styled.div`
